@@ -1,12 +1,12 @@
+use std::ffi::CString;
 use nix::errno::Errno;
 use nix::unistd;
 use nix::sched;
-use std::ffi::CStr;
-use std::ffi::CString;
-use std::str::Utf8Error;
-use std::thread::current;
+use container_runtime;
 
 fn main() {
+    println!("HERE IT IS {}", container_runtime::add_one(23));
+
     let mut buf = [0u8; 64];
     let hostname_cstr = unistd::gethostname(&mut buf).expect("Failed to get hostname");
     let hostname = hostname_cstr.to_str().expect("Invalid hostname (not UTF-8)");
@@ -67,6 +67,6 @@ fn main() {
 fn get_host_name() -> String {
     let mut buf = [0u8; 64];
     let hostname_cstr = unistd::gethostname(&mut buf).expect("Failed to get hostname.");
-    let iWantToReturnThis = hostname_cstr.to_str();
-    return iWantToReturnThis.ok().unwrap().to_owned();
+    let return_result = hostname_cstr.to_str();
+    return return_result.ok().unwrap().to_owned();
 }
