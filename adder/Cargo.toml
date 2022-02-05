@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 nix = "0.23.1"
-container_runtime = {path = "../container_runtime"}
+lib_container_runtime = {path = "../lib_container_runtime"}

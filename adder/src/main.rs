@@ -2,10 +2,10 @@ use std::ffi::CString;
 use nix::errno::Errno;
 use nix::unistd;
 use nix::sched;
-use container_runtime;
+use lib_container_runtime;
 
 fn main() {
-    println!("HERE IT IS {}", container_runtime::add_one(23));
+    println!("HERE IT IS {}", lib_container_runtime::add_one(23));
 
     let mut buf = [0u8; 64];
     let hostname_cstr = unistd::gethostname(&mut buf).expect("Failed to get hostname");
