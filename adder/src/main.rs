@@ -43,7 +43,7 @@ fn main() {
     println!("This thread id: {}", unistd::gettid());
 
     // Create UTS namespace
-    let current_hostname = get_host_name();
+    let current_hostname = lib_container_runtime::get_host_name();
     println!("Host hostname {}", current_hostname);
 
     // How to respond to a specific error, in this case EPERM...
@@ -60,13 +60,6 @@ fn main() {
     unistd::sethostname(newhostname).expect("sethostname() failed.");
     println!("Succesfully changed hostname to {}", newhostname);
 
-    let result = get_host_name();
+    let result = lib_container_runtime::get_host_name();
     println!("Retreived hostname {}", result);
-}
-
-fn get_host_name() -> String {
-    let mut buf = [0u8; 64];
-    let hostname_cstr = unistd::gethostname(&mut buf).expect("Failed to get hostname.");
-    let return_result = hostname_cstr.to_str();
-    return return_result.ok().unwrap().to_owned();
 }
