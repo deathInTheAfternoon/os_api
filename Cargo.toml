@@ -1,5 +1,5 @@
 [workspace]
  members = [
-     "adder",
+     "container_cli",
      "lib_container_runtime",
  ]
