@@ -5,7 +5,7 @@ use nix::sched;
 use lib_container_runtime;
 
 fn main() {
-    println!("Starting the incredible app, today.");
+    println!("Starting the incredible app. Out for release, today.");
     println!("HERE IT IS {}", lib_container_runtime::add_one(23));
 
     let mut buf = [0u8; 64];
