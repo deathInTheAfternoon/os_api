@@ -1,0 +1,11 @@
+# ignore folders used during release build but not required during runtime
+/target/debug
+/target/release/.fingerprint
+/target/release/build
+/target/release/deps
+/target/release/incremental
+
+.git
+.gitignore
+.github
+.dockerignore

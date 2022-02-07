@@ -1,6 +1,6 @@
-FROM gcr.io/distroless/cc
+FROM debian:buster-slim
 
 WORKDIR /app
 COPY ./target/release .
 
-CMD [ "/app/container_cli" ]
+ENTRYPOINT [ "/app/container_cli" ]
