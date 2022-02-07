@@ -5,7 +5,7 @@ To run this daemon outside of Docker: cargo run --release
         cargo run --release -- --bind 0.0.0.0
 
 This Dockerfile only packages the Cargo release build.
-It uses the larger debian:buster-slim (69MB). This way you have access to a shell and can install network tools for debugging. However, distroless gcr.distroless/cc (23MB) can be used.
+It uses the larger debian:buster-slim (69MB). This way you have access to a shell and can install network tools for debugging (e.g. net-tools, procps, curl, sudo). However, distroless gcr.distroless/cc (23MB) can be used.
 To build this docker image: docker build -t nt .
 To run this Docker image:
     docker run --rm -p 8080:8080 nt --address 0.0.0.0
