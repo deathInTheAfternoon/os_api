@@ -6,5 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-nix = "0.23.1"
 lib_container_runtime = {path = "../lib_container_runtime"}
+rocket = "0.5.0-rc.1"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+clap = {version = "3.0.14", features = ["derive"]}

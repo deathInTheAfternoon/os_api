@@ -1,66 +1,33 @@
-use std::ffi::CString;
-use nix::errno::Errno;
-use nix::unistd;
-use nix::sched;
-use lib_container_runtime;
+#[macro_use] extern crate rocket;
+use uuid::Uuid;
+use clap::Parser;
 
-fn main() {
-    println!("Starting the incredible app. Out for release, today.");
-    println!("HERE IT IS {}", lib_container_runtime::add_one(23));
+// The amazingly simple Rocket daemon
+#[derive(Parser, Debug)]
+#[clap(name("Rocket daemon"), author("DeathInTheAfternoon"), version("0.1"), about("Does what is says on the tin."), long_about=None)]
+struct Args {
+    /// Set the listening port
+    /// 
+    /// This parameter will configure the port on which this daemon listens for incoming requests.
+    #[clap(short('p'), long("port"), default_value_t = 8080)]
+    port: i32,
+}
 
-    let mut buf = [0u8; 64];
-    let hostname_cstr = unistd::gethostname(&mut buf).expect("Failed to get hostname");
-    let hostname = hostname_cstr.to_str().expect("Invalid hostname (not UTF-8)");
-    println!("Hostname {}", hostname);
+#[get("/")]
+fn index() -> &'static str {
+    "Hello Naveen"
+}
 
-    let dir = unistd::getcwd().unwrap();
-    println!("Current working dir {:?}", dir);
+#[get("/users")]
+fn get_users() -> &'static str {
+    "You're my first user"
+}
 
-    let egid = unistd::getegid();
-    println!("Effective group id of this process: {}", egid);
-
-    let euid = unistd::geteuid();
-    println!("Effective user id of this process: {}", euid);
-
-    let user = CString::new("nthakur").unwrap();
-    let gid = unistd::Gid::from_raw(123);
-    let glist = unistd::getgrouplist(&user, gid);
-    println!("Group list for user {:?}", glist);
-
-    println!("Supplementary group IDs of calling process: {:?}", unistd::getgroups());
-
-    let pid = Some(unistd::Pid::this());
-    let pgid = unistd::getpgid(pid).expect("Failed to get pgid");
-    println!("Group id of calling proc with id {}: {}", pid.unwrap(), pgid);
-
-    println!("Group id of calling proc: {}", unistd::getpgrp());
-
-    println!("Parent pid: {}", unistd::getppid());
-
-    println!("Real, effective, saved group ids of this proc: {:?}", unistd::getresgid());
-
-    println!("Real, effective, saved user ids of this proc: {:?}", unistd::getresuid());
-
-    println!("This thread id: {}", unistd::gettid());
-
-    // Create UTS namespace
-    let current_hostname = lib_container_runtime::get_host_name();
-    println!("Host hostname {}", current_hostname);
-
-    // How to respond to a specific error, in this case EPERM...
-    sched::unshare(sched::CloneFlags::CLONE_NEWUTS).unwrap_or_else(|error| {
-        if error == Errno::EPERM {
-            panic!("This process doesn't have permissions to call 'unshare()'");
-        } else {
-            panic!("Error {:?} calling unshare().", error);
-        }
-    });
-    println!("Successfully called unshare(CLONE_NEWUTS)");
-
-    let newhostname = "blahblah";
-    unistd::sethostname(newhostname).expect("sethostname() failed.");
-    println!("Succesfully changed hostname to {}", newhostname);
-
-    let result = lib_container_runtime::get_host_name();
-    println!("Retreived hostname {}", result);
+#[rocket::main]
+async fn main() {
+    println!("Starting server with uuid {}",Uuid::new_v4());
+    let args = Args::parse(); 
+    // Start Rocket using our custom port number
+    let figment = rocket::Config::figment().merge(("port", args.port));
+    rocket::custom(figment).mount("/", routes![index, get_users]).launch().await;
 }
