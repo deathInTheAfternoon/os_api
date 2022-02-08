@@ -1,9 +1,10 @@
 #[macro_use] extern crate rocket;
-use std::net::{Ipv4Addr, IpAddr};
 use uuid::Uuid;
 use clap::Parser;
+use rocket::State;
 
-// The amazingly simple Rocket daemon
+// CLAP command line handling...
+/// The amazingly simple Rocket daemon
 #[derive(Parser, Debug)]
 #[clap(name("Rocket daemon"), author("DeathInTheAfternoon"), version("0.1"), about("Does what is says on the tin."), long_about=None)]
 struct Args {
@@ -20,9 +21,14 @@ struct Args {
     address: String,
 }
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello Naveen"
+// Structure used to store state shared between handlers...
+struct DaemonState {
+    uuid: Uuid,
+}
+
+#[get("/count")]
+fn index(hit_count: &State<DaemonState>) -> String {
+    format!("My id is {}", hit_count.uuid)
 }
 
 #[get("/users")]
@@ -32,10 +38,12 @@ fn get_users() -> &'static str {
 
 #[rocket::main]
 async fn main() {
-    println!("Starting server with uuid {}",Uuid::new_v4());
     let args = Args::parse(); 
     // Start Rocket using a custom ip address and port number
     let figment = rocket::Config::figment().merge(("port", args.port))
                                                     .merge(("address", args.address));
-    rocket::custom(figment).mount("/", routes![index, get_users]).launch().await;
+    rocket::custom(figment)
+            .mount("/", routes![index, get_users])
+            .manage(DaemonState { uuid: Uuid::new_v4(), })
+            .launch().await;
 }
