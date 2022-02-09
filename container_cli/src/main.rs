@@ -26,7 +26,7 @@ struct DaemonState {
     uuid: Uuid,
 }
 
-#[get("/count")]
+#[get("/")]
 fn index(hit_count: &State<DaemonState>) -> String {
     format!("My id is {}", hit_count.uuid)
 }
