@@ -27,8 +27,8 @@ struct DaemonState {
 }
 
 #[get("/")]
-fn index(hit_count: &State<DaemonState>) -> String {
-    format!("My id is {}", hit_count.uuid)
+fn index(uuid_state: &State<DaemonState>) -> String {
+    format!("My id is {}", uuid_state.uuid)
 }
 
 #[rocket::main]
