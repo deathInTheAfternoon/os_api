@@ -8,7 +8,7 @@ Run using Cargo?
 To run this daemon outside of Docker (directly on the host): 
     cargo run --release
 If you need to pass an argument through cargo to the daemon use '--' e.g.:
-    cargo run --release -- --bind 0.0.0.0
+    cargo run --release -- --address 0.0.0.0
 
 How to tidy up cargo lockfile and target folder?
 The cargo command 'cargo generate-lockfile' will clear and regenerate your lock file. Useful to tidy up after many changes/deletions to your deps in your Cargo.toml.
